@@ -1,0 +1,37 @@
+********************************************
+* von 10.196.134.121 (Kabel, Gebäude Nord) *
+********************************************
+
+[iso@iso-t530arch ~]$ sudo traceroute -T vpn.fhnw.ch 443
+traceroute to vpn.fhnw.ch (147.86.3.239), 30 hops max, 60 byte packets
+ 1  10.196.134.1 (10.196.134.1)  9.225 ms  9.235 ms  9.230 ms
+ 2  cpfw30u101-stu.net.fhnw.ch (10.195.0.253)  5.230 ms cpfw30u102-stu.net.fhnw.ch (10.195.0.252)  5.949 ms  6.485 ms
+ 3  cpfw30u101-stu.net.fhnw.ch (10.195.0.253)  1.528 ms cpfw30u102-stu.net.fhnw.ch (10.195.0.252)  2.667 ms  3.061 ms
+ 4  * * ndb0u102-dmz-vl3951.net.fhnw.ch (193.8.136.243)  5.936 ms
+ 5  vpn1.fhnw.ch (147.86.3.239)  13.290 ms  5.173 ms  13.332 ms
+ 
+[iso@iso-t530arch ~]$ sudo traceroute -T www.fhnw.ch 80
+traceroute to www.fhnw.ch (147.86.3.160), 30 hops max, 60 byte packets
+ 1  10.196.134.1 (10.196.134.1)  0.843 ms  0.834 ms  1.028 ms
+ 2  cpfw30u102-stu.net.fhnw.ch (10.195.0.252)  5.145 ms  5.382 ms cpfw30u101-stu.net.fhnw.ch (10.195.0.253)  2.021 ms
+ 3  cpfw30u102-stu.net.fhnw.ch (10.195.0.252)  1.007 ms cpfw30u101-stu.net.fhnw.ch (10.195.0.253)  0.990 ms cpfw30u102-stu.net.fhnw.ch (10.195.0.252)  1.604 ms
+ 4  * * ndb0u101-dmz-vl3951.net.fhnw.ch (193.8.136.242)  2.500 ms
+ 5  wsnmu25.fhnw.ch (147.86.3.160)  5.871 ms  6.096 ms  8.244 ms
+ 
+[iso@iso-t530arch ~]$ sudo traceroute fsemu18.edu.ds.fhnw.ch
+traceroute to fsemu18.edu.ds.fhnw.ch (10.51.2.164), 30 hops max, 60 byte packets
+ 1  10.196.134.1 (10.196.134.1)  0.818 ms  0.818 ms  1.031 ms
+ 2  10.195.0.238 (10.195.0.238)  1.618 ms  2.151 ms  1.581 ms
+ 3  10.195.0.238 (10.195.0.238)  1.281 ms  1.577 ms *
+ 4  ndb0u102-rme-vl3903.net.fhnw.ch (10.51.0.227)  1.551 ms * *
+ 5  fsemu18.edu.ds.fhnw.ch (10.51.2.164)  2.082 ms  2.344 ms  2.042 ms
+ 
+[iso@iso-t530arch ~]$ sudo traceroute -T web.fhnw.ch 80
+traceroute to web.fhnw.ch (147.86.3.66), 30 hops max, 60 byte packets
+ 1  10.196.134.1 (10.196.134.1)  0.804 ms  0.809 ms  0.809 ms
+ 2  cpfw30u102-stu.net.fhnw.ch (10.195.0.252)  3.616 ms  4.290 ms  4.245 ms
+ 3  cpfw30u101-stu.net.fhnw.ch (10.195.0.253)  0.955 ms cpfw30u102-stu.net.fhnw.ch (10.195.0.252)  1.369 ms  1.669 ms
+ 4  ndb0u102-dmz-vl3951.net.fhnw.ch (193.8.136.243)  3.527 ms ndb0u101-dmz-vl3951.net.fhnw.ch (193.8.136.242)  3.553 ms *
+ 5  web.fhnw.ch (147.86.3.66)  3.548 ms  5.369 ms  4.186 ms
+ 
+ **********************

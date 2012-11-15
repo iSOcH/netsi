@@ -1,0 +1,17 @@
+Aufgabe 3
+*********
+aufg3-P0.pcapng beinhaltet den Datenverkehr, der durch den Aufruf von nmap -P0 -p80 www.fhnw.ch erzeugt wird. Wir haben die Option "-P0" gesetzt, weil wir wissen, dass unter www.fhnw.ch (mindestens) ein Server erreichbar ist. Der Output des Commands war der folgende:
+
+Starting Nmap 6.01 ( http://nmap.org ) at 2012-11-15 08:18 CET
+Nmap scan report for www.fhnw.ch (147.86.3.160)
+Host is up (0.0021s latency).
+rDNS record for 147.86.3.160: wsnmu25.fhnw.ch
+PORT   STATE SERVICE
+80/tcp open  http
+Nmap done: 1 IP address (1 host up) scanned in 0.03 seconds
+
+Mit dem Output können wir praktisch den gesamten aufgezeichneten Verkehr begründen:
+- Der Name muss zu einer IP (hier 147.86.3.160) aufgelöst werden, was mittels DNS geschieht.
+- Die IP wird zurück zu einem Namen aufgelöst (reverse DNS Lookup, "rDNS record..."), ebenfalls via DNS.
+- Danach wird ein kompletter TCP-3-way-Handshake durchgeführt und die Verbindung danach sofort wieder beendet (Frame 8 mit TCP Flags RST,ACK).
+- Da der TCP-Handshake erfolgreich durchgeführt werden konnte zeigt uns nmap an, dass der Port geöffnet ist.

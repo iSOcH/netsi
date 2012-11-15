@@ -1,0 +1,25 @@
+[iso@iso-t530arch lab1]$ sudo nmap -O 10.196.134.1
+[sudo] password for iso: 
+
+Starting Nmap 6.01 ( http://nmap.org ) at 2012-11-12 10:47 CET
+Nmap scan report for 10.196.134.1
+Host is up (0.00081s latency).
+Not shown: 998 closed ports
+PORT    STATE SERVICE
+161/tcp open  snmp
+179/tcp open  bgp
+MAC Address: EE:EE:EE:01:07:06 (Unknown)
+No exact OS matches for host (If you know what OS is running on it, see http://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=6.01%E=4%D=11/12%OT=161%CT=1%CU=42322%PV=Y%DS=1%DC=D%G=Y%M=EEEEEE
+OS:%TM=50A0C5C8%P=x86_64-unknown-linux-gnu)SEQ(SP=104%GCD=1%ISR=10F%TI=I%CI
+OS:=I%II=RI%SS=O%TS=3)OPS(O1=M5B4NNT11%O2=M578NNT11%O3=M280NNT11%O4=M5B4NNT
+OS:11%O5=M218NNT11%O6=M109NNT11)WIN(W1=6240%W2=6240%W3=6240%W4=6240%W5=6240
+OS:%W6=62D4)ECN(R=Y%DF=N%T=41%W=644C%O=M5B4%CC=N%Q=)T1(R=Y%DF=N%T=41%S=O%A=
+OS:S+%F=AS%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y%DF=N%T=41%W=0%S=A%A=Z%F=R%O=%RD=0%Q
+OS:=)T5(R=Y%DF=N%T=41%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=N%T=41%W=0%S=A
+OS:%A=Z%F=R%O=%RD=0%Q=)T7(R=Y%DF=N%T=41%W=0%S=Z%A=S%F=AR%O=%RD=0%Q=)U1(R=Y%
+OS:DF=N%T=100%IPL=38%UN=0%RIPL=G%RID=G%RIPCK=I%RUCK=0%RUD=G)IE(R=Y%DFI=S%T=
+OS:100%CD=S)
+
+Network Distance: 1 hop

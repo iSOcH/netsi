@@ -1,0 +1,11 @@
+[iso@iso-t530arch ~]$ arp -n
+Address                  HWtype  HWaddress           Flags Mask            Iface
+10.196.134.1             ether   ee:ee:ee:01:07:06   C                     eth0
+10.196.134.127           ether   54:42:49:56:7c:bc   C                     eth0
+
+Address: zu welcher IP gehört der Rest der Information in der Zeile?
+HWType: gibt layer1/2 typ an
+HWAddress: der IP (Spalte 1) zugeordnete Hardwareadresse (hier MAC-Aresse)
+Flags: C steht für Complete (ARP Anfrage abgeschlossen), M wäre permanent, P publish
+Mask: würde zusammen mit publish benutzt
+Iface: über welches Interface ist die HWAddr erreichbar
