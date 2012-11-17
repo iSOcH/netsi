@@ -1,0 +1,146 @@
+// eigene portrange scannen, dies speichert die hosts dann direkt in die
+// postgres-db
+msf > db_nmap 10.196.136.118/24
+// resultate anzeigen
+msf > hosts
+
+// dns-lookups von fsemu18.edu.ds.fhnw.ch und dsemu12.edu.ds.fhnw.ch zeigen, dass
+// in der range 10.51.2.0/x interessant sein dürfte
+[iso@iso-t530arch ~]$ tracepath dsemu12.edu.ds.fhnw.ch
+ 1:  iso-t530arch                                          0.122ms pmtu 1500
+ 1:  10.196.136.1                                          1.167ms 
+ 1:  10.196.136.1                                          1.167ms 
+ 2:  10.195.0.238                                          2.308ms asymm  3 
+ 3:  10.195.0.238                                          1.938ms 
+ 4:  ndb0u101-rme-vl3903.net.fhnw.ch                       2.382ms 
+ 5:  dsemu12.edu.ds.fhnw.ch                                2.123ms reached
+
+// wieder via 10.195.0.238 erreicht, über 10.195.0.0/24 wollen wir also auch etwas wissen
+msf > db_nmap -T4 -A 10.195.0.0/24
+[*] Nmap: Starting Nmap 6.01 ( http://nmap.org ) at 2012-11-17 11:59 CET
+[*] Nmap: Nmap done: 256 IP addresses (0 hosts up) scanned in 52.18 seconds
+// dieses netz scheint recht abgeschottet zu sein
+252.0.195.10.in-addr.arpa domain name pointer cpfw30u102-stu.net.fhnw.ch.
+// "cpfw" könnte gut für "CheckPoint Firewall" stehen 
+
+[iso@iso-t530arch ~]$ host ndb0u101-rme-vl3903.net.fhnw.ch
+ndb0u101-rme-vl3903.net.fhnw.ch has address 10.51.0.226
+
+PING psera111.edu.ds.fhnw.ch (10.51.3.99) //printserver
+// --> range ist _mindestens_ 10.51.0.0/22
+msf > db_nmap -T5 -A 10.51.0.0/21
+
+// im letzten semester haben wir einen server bestellt,
+// für internen gebrauch, mal schauen wo der stand
+[iso@iso-t530arch aur]$ host demosim.cs.technik.fhnw.ch
+demosim.cs.technik.fhnw.ch has address 10.36.139.200
+
+[iso@iso-t530arch aur]$ tracepath 10.36.139.200
+ 1:  iso-t530arch                                          0.104ms pmtu 1500
+ 1:  10.196.136.1                                          1.370ms 
+ 1:  10.196.136.1                                          1.184ms 
+ 2:  10.195.0.238                                          2.343ms asymm  3 
+ 3:  10.195.0.238                                          1.872ms 
+ 4:  no reply
+ 5:  10.36.18.1                                            2.689ms 
+ 6:  no reply [... und so weiter]
+
+// dieser tracepath liefert noch kaum infos über die grösse des subnetzes ... wir müssen zuerst mal einen host finden der antwortet
+msf > db_nmap -T4 10.36.139.200/24
+[*] Nmap: Nmap done: 256 IP addresses (21 hosts up) scanned in 21.36 seconds
+
+// einen der hosts, die up sind, tracen:
+[iso@iso-t530arch aur]$ traceroute 10.36.139.27
+traceroute to 10.36.139.27 (10.36.139.27), 30 hops max, 60 byte packets
+ 1  10.196.136.1 (10.196.136.1)  0.753 ms  0.985 ms  0.977 ms
+ 2  10.195.0.238 (10.195.0.238)  2.580 ms  2.306 ms *
+ 3  10.195.0.238 (10.195.0.238)  1.270 ms  1.262 ms  1.578 ms
+ 4  ndb0u102-rlo-vl3902.net.fhnw.ch (10.35.0.227)  2.420 ms *  2.367 ms
+ 5  10.36.18.1 (10.36.18.1)  2.117 ms  2.621 ms  2.993 ms
+ 6  vcenter-sgi.cs.technik.fhnw.ch (10.36.139.27)  2.581 ms * *
+ // --> 10.36.18.1 ist gw in dieses netz, von daher muss es sich um das netz 10.36.0.0/16 handeln (riesig...)
+ msf > db_nmap -T5 -A 10.36.0.0/16
+ [*] Nmap: | ssh-hostkey: Possible duplicate hosts
+[*] Nmap: | Key 1024 53:3a:da:05:a3:e8:54:e6:f4:14:91:19:46:c1:6f:0e (DSA) used by:
+[*] Nmap: |   10.36.139.126
+[*] Nmap: |   10.36.139.134
+[*] Nmap: |   10.36.139.135
+[*] Nmap: |   10.36.139.140
+[*] Nmap: |   10.36.139.153
+[*] Nmap: |   10.36.139.154
+[*] Nmap: |   10.36.139.155
+[*] Nmap: | Key 2048 81:1c:70:73:33:37:6b:0e:38:b7:79:63:e2:db:1e:70 (RSA) used by:
+[*] Nmap: |   10.36.139.130
+[*] Nmap: |   10.36.139.145
+[*] Nmap: |   10.36.139.147
+[*] Nmap: |   10.36.139.152
+[*] Nmap: | Key 2048 0e:5f:a4:29:b1:c0:53:2b:4b:a0:a9:7e:15:96:2a:01 (RSA) used by:
+[*] Nmap: |   10.36.19.69
+[*] Nmap: |   10.36.19.70
+[*] Nmap: | Key 2048 c8:65:6c:23:fc:cf:56:4a:36:d3:b5:c4:c7:c9:cf:fa (RSA) used by:
+[*] Nmap: |   10.36.139.126
+[*] Nmap: |   10.36.139.134
+[*] Nmap: |   10.36.139.135
+[*] Nmap: |   10.36.139.140
+[*] Nmap: |   10.36.139.153
+[*] Nmap: |   10.36.139.154
+[*] Nmap: |   10.36.139.155
+[*] Nmap: | Key 1024 7c:a9:41:65:e4:f5:d2:55:39:72:59:41:d2:f8:43:d3 (DSA) used by:
+[*] Nmap: |   10.36.139.130
+[*] Nmap: |   10.36.139.145
+[*] Nmap: |   10.36.139.147
+[*] Nmap: |   10.36.139.152
+[*] Nmap: | Key 1024 37:c7:f3:87:2b:ed:c9:2e:87:38:63:9f:c6:4d:10:0f (DSA) used by:
+[*] Nmap: |   10.36.19.69
+[*] Nmap: |_  10.36.19.70
+ [*] Nmap: Nmap done: 65536 IP addresses (40 hosts up) scanned in 1796.25 seconds
+ 
+ // aufruf whatismyip.com zeigt, dass wir von 147.86.196.136 her verbinden - aber diese ip erscheint nicht in den traceroutes (proxy?)
+ 
+ // vpn ip 10.207.240.83 - ist aus dem kabelnetz nicht erreichbar
+ // vpn subnetz ist 255.255.255.252, also 10.207.240.0-10.207.243.254
+ 
+ // wlan auth, ohne vpn
+ nach default-gw 10.175.x.1 kommt 10.163.0.221 (docking-box)
+ 
+ // externe ranges mit dns einträgen gemäss footprinting
+ msf > db_nmap -A 147.86.8.0/24 147.86.2.0/23 147.86.7.0/24
+ [*] Nmap: Nmap done: 1024 IP addresses (132 hosts up) scanned in 1166.03 seconds
+ 
+ // windows versionen von servern in 10.51.2.0/24 genauer bestimmen
+ msf > use auxiliary/scanner/smb/smb_version 
+msf  auxiliary(smb_version) > set RHOSTS 10.51.2.0-254
+msf  auxiliary(smb_version) > set THREADS 23
+msf  auxiliary(smb_version) > run 
+[*] 10.51.2.40:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:DSEMU11) (domain:EDU)
+[*] 10.51.2.24:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:DSRMU11) (domain:DS)
+[*] 10.51.2.41:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:DSEMU12) (domain:EDU)
+[*] Scanned 027 of 255 hosts (010% complete)
+[*] Scanned 052 of 255 hosts (020% complete)
+[*] 10.51.2.85:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU22) (domain:EDU)
+[*] Scanned 081 of 255 hosts (031% complete)
+[*] Scanned 103 of 255 hosts (040% complete)
+[*] Scanned 130 of 255 hosts (050% complete)
+[*] 10.51.2.155:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU22) (domain:EDU)
+[*] 10.51.2.158:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU53) (domain:EDU)
+[*] 10.51.2.157:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU22) (domain:EDU)
+[*] 10.51.2.152:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU52) (domain:EDU)
+[*] 10.51.2.150:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU53) (domain:EDU)
+[*] 10.51.2.156:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU52) (domain:EDU)
+[*] 10.51.2.154:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU53) (domain:EDU)
+[*] 10.51.2.160:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU52) (domain:EDU)
+[*] Scanned 153 of 255 hosts (060% complete)
+[*] 10.51.2.168:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU52) (domain:EDU)
+[*] 10.51.2.172:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU52) (domain:EDU)
+[*] 10.51.2.173:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU22) (domain:EDU)
+[*] 10.51.2.164:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU52) (domain:EDU)
+[*] 10.51.2.162:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU53) (domain:EDU)
+[*] 10.51.2.166:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU53) (domain:EDU)
+[*] 10.51.2.196:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU53) (domain:EDU)
+[*] Scanned 182 of 255 hosts (071% complete)
+[*] 10.51.2.204:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU52) (domain:EDU)
+[*] 10.51.2.207:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:CLEMU53) (domain:EDU)
+[*] Scanned 204 of 255 hosts (080% complete)
+[*] Scanned 230 of 255 hosts (090% complete)
+[*] Scanned 255 of 255 hosts (100% complete)
+[*] Auxiliary module execution completed

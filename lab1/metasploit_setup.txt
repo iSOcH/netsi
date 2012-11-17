@@ -1,0 +1,17 @@
+Postgres Setup
+**************
+sudo su postgres -c psql
+
+postgres=# CREATE USER metasploit WITH PASSWORD 'Aetai9lu';
+CREATE ROLE
+
+// ruby unterstützung für postgres installieren:
+gem install pg
+
+// mit pgadmin db metasplit mit owner "metasploit" erstellen
+
+// in msfconsole mit db verbinden
+msf > db_connect metasploit:Aetai9lu@127.0.0.1/metasploit
+
+// noch updaten
+sudo msfupdate
