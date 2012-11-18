@@ -49,7 +49,7 @@ Spalte bedeutet.} \\arp -n\\
 \end{description}
 
 
-
+\newpage
 \section{Aufgabe 2 - Utilities ping, hping3, dig, traceroute}
 \subsection{Perl Script für Host-Discovery im Subnet}
 \lstinputlisting[numbers=left]{../aufg2/netscan.pl}
@@ -132,6 +132,7 @@ Grundsätzlich sollte der Sprung an der Latenzzeit ersichtlich sein. In diesem F
 	\label{fig:traceroute_apple}
 \end{figure}
 
+\newpage
 \section{Aufgabe 3 - Nmap/Wireshark}
 Wir haben den Aufruf folgendermassen gemacht: \begin{verbatim}nmap -P0 -p80 www.fhnw.ch\end{verbatim} Wir haben die Option -P0 gesetzt, weil wir wissen, dass unter www.fhnw.ch (mindestens) ein Server erreichbar ist. Der Output des Commands war der folgende:
 
@@ -160,6 +161,7 @@ Mit dem Output können wir praktisch den gesamten aufgezeichneten Verkehr (siehe
 	\label{fig:traffic_nmap-p80}
 \end{figure}
 
+\newpage
 \section{Aufgabe 4 - Installation Metasploit}
 Metaplsploit wurde unter Arch Linux mithilfe des Pakets von \url{https://aur.archlinux.org/packages.php?ID=2880} installiert. Das Package beinhaltet Postgresql nicht, daher musste dieser Datenbankdienst separat über die Paketverwaltung installiert und danach konfiguriert werden. Die Administration von Postgresql wurde mit dem Paket pgadmin abgewickelt (Erstellen eines Benutzers und einer Datenbank).
 Nach diesen Schritten wurde metasploit folgendermassen fertig eingerichtet:
@@ -172,6 +174,7 @@ msf > db_connect metasploit:****@127.0.0.1/metasploit
 Nach diesen Schritten ist metasploit bereit für Scans und mit der Datenbank verbunden.
 
 
+\newpage
 \section{Aufgabe 5 - Footprinting/Scanning}
 \subsection{Footprinting}
 \subsubsection{Whois fhnw.ch}
@@ -205,16 +208,16 @@ ns2.fhnw.ch [147.86.3.21]
 \end{lstlisting}
 
 \subsubsection{DNS Einträge}
-\begin{figure}[h]
+\begin{figure}[p]
 	\centering
-	\includegraphics[width=0.8\textwidth]{../aufg5/dns_records.png}
+	\includegraphics[width=0.6\textwidth]{../aufg5/dns_records.png}
 	\caption{DNS Einträge fhnw.ch}
 	\label{fig:dns_records}
 \end{figure}
 
 \subsubsection{Infos zur Website}
 Die Informationen in Grafik \ref{fig:website_infos} auf Seite \pageref{fig:website_infos} stammen von \url{http://www.websitelibrary.ch/fhnw.ch}.
-\begin{figure}[h]
+\begin{figure}[p]
 	\centering
 	\includegraphics[width=0.5\textwidth]{../aufg5/website_infos.png}
 	\caption{Informationen zu www.fhnw.ch}
@@ -223,9 +226,9 @@ Die Informationen in Grafik \ref{fig:website_infos} auf Seite \pageref{fig:websi
 
 \subsubsection{Informationen zu Mail und Netzwerk}
 Eberle: Quellenangabe hier bitte - Grafik \ref{fig:iprange_infos} auf Seite \pageref{fig:iprange_infos}
-\begin{figure}[h]
+\begin{figure}[p]
 	\centering
-	\includegraphics[width=0.7\textwidth]{../aufg5/iprange_infos.png}
+	\includegraphics[width=0.6\textwidth]{../aufg5/iprange_infos.png}
 	\caption{Informationen zu Mail und Netzwerk}
 	\label{fig:iprange_infos}
 \end{figure}
@@ -234,9 +237,9 @@ Eberle: Quellenangabe hier bitte - Grafik \ref{fig:iprange_infos} auf Seite \pag
 Die Grafik \ref{fig:heinz_graf1} auf Seite \pageref{fig:heinz_graf1} zeigt die Informationen über Heinz Graf auf der FHNW-Website.
 
 Gemäss \url{http://www.bienen-ag.ch/index.php?option=com_content&view=article&id=193} ist er auch Beisitzer im Verband Aargauischer Bienenzüchtervereine.
-\begin{figure}[h]
+\begin{figure}[p]
 	\centering
-	\includegraphics[width=0.3\textwidth]{../aufg5/heinz_graf1.png}
+	\includegraphics[width=0.4\textwidth]{../aufg5/heinz_graf1.png}
 	\caption{Informationen zu Heinz Graf von der FHNW Website}
 	\label{fig:heinz_graf1}
 \end{figure}
