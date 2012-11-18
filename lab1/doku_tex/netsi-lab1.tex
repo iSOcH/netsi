@@ -1,0 +1,164 @@
+\documentclass[11pt,a4paper]{scrartcl}
+\usepackage{graphicx}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[colorlinks=false,pdfborder={0 0 0}]{hyperref}
+\usepackage{listings}
+\lstset{breaklines=true, breakatwhitespace=true, basicstyle=\small}
+
+\title{Labor Netzwerksicherheit 1\\
+	Testen von Firmen-Netzwerken}
+\author{Yanick Eberle\\
+		Pascal Schwarz}
+\date{}
+\begin{document}
+\maketitle
+
+\section{Aufgabe 1 - Wireshark/ARP}
+\subsection{Protokollaufbau}
+Die folgende Grafik\footnote{Quelle: http://ipv6.com/images/diagrams/arp1.gif} zeigt den Aufbau des Protokolls.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{../aufg1/arp1.png}
+	\caption{Address Resolution Protocol}
+	\label{fig:arp}
+\end{figure}
+\subsection{Beantwortung der gestellten Fragen zum Protokoll}
+\textbf{Wieviele Bytes ist das ARP Opcode-Feld vom Anfang des Ethernet Frames entfernt?} \\6 Byte\\
+\textbf{Welcher Wert hat das Opcode-Feld innerhalb des ARP-payload des Ethernet frame, worin eine ARP Anfrage gestellt ist?} \\ARP request\\
+\textbf{Enthält die ARP Meldung die IP Adresse des Senders?} \\Ja\\
+\textbf{Wo in der ARP-Anfrage erscheint die "Frage" : Welche Maschine besitzt diese IP Adresse?} \\Operation (Opcode)\\
+\textbf{Geben Sie den Inhalt des ARP-Cache Ihres Laptops an, und erklären Sie, was jede
+Spalte bedeutet.} \\arp -n\\
+
+\begin{tabular}{l|l|l|l|l|l}
+	Address & HWtype & HWaddress & Flags & Mask & Iface \\
+	10.196.134.1	&	ether	&	ee:ee:ee:01:07:06	&	C	&	&	eth0 \\
+	10.196.134.127	&	ether   &	54:42:49:56:7c:bc	&	C	&	&	eth0
+\end{tabular}
+\begin{description}
+	\item[Address] zu welcher IP gehört der Rest der Information in der Zeile?
+	\item[HWType] gibt layer1/2 typ an
+	\item[HWAddress] der IP (Spalte 1) zugeordnete Hardwareadresse (hier MAC-Adresse)
+	\item[Flags] C steht für Complete (ARP Anfrage abgeschlossen), M wäre permanent, P publish
+	\item[Mask] würde zusammen mit publish benutzt
+	\item[Iface] über welches Interface ist die HWAddr erreichbar
+\end{description}
+
+
+
+\section{Aufgabe 2 - Utilities ping, hping3, dig, traceroute}
+\subsection{Perl Script für Host-Discovery im Subnet}
+\lstinputlisting[numbers=left]{../aufg2/netscan.pl}
+
+Das Script erzeugt eine Ausgabe ähnlich der Folgenden:
+\begin{lstlisting}
+10.196.134.1
+10.196.134.16
+10.196.134.17
+10.196.134.19
+10.196.134.21
+10.196.134.118
+10.196.134.120
+\end{lstlisting}
+
+\subsection{DNS Protokoll}
+Viele Informationen in diesem Abschitt stammen von \url{http://doc-tcpip.org/Dns/named.dns.message.html}.
+\subsubsection{DNS-Request Packet: Welches Protokoll wird benutzt? Welche Vorteile bietet
+dies für einen DNS?}
+Es wird UDP als Transportprotokoll (siehe Grafik \ref{fig:dns_2_2_1} auf Seite \pageref{fig:dns_2_2_1}) eingesetzt. Dadurch entsteht weniger Overhead (hauptsächlich weil kein 3-way-Handshake nötig ist), was wiederum die Performance erhöht (geringere Latenz).
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{../aufg2/dns_2_2_1.png}
+	\caption{DNS Anfrage in Wireshark}
+	\label{fig:dns_2_2_1}
+\end{figure}
+
+\subsubsection{DNS-Request Paket: Welcher src und dst port werden definiert? Wie interpretieren Sie das Resultat?}
+Auf Zielhost wird auf Port 53 abgehört. Da es eine Anfrage ist, ist der Destination Port 53. Siehe hierzu Grafik \ref{fig:dns_2_2_2} auf Seite \pageref{fig:dns_2_2_2}.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{../aufg2/dns_2_2_2.png}
+	\caption{DNS Ports in Wireshark}
+	\label{fig:dns_2_2_2}
+\end{figure}
+
+\subsubsection{DNS-Response Paket: Welche Felder gibt es? Erklären Sie deren Bedeutung.}
+\begin{description}
+	\item[Time] Antwortzeit
+	\item[Transaction ID] eindeutige Nummer, muss mit Transaction ID des DNS Requests übereinstimmen, ist dies nicht der Fall, muss die Antwort verworfen werden.
+	\item[Flags] Request, Response, Error, no Error, \ldots
+	\item[Questions] Anzahl Anfragen
+	\item[Answer RRs] Anzahl Antworten
+	\item[Authority RRs] RRs, die auf verantwortliche Server deuten
+	\item[Additional RRs] RRs mit weiteren Informationen/Records
+\end{description}
+\textbf{RR} steht hier für \textbf{Resource Record}, ein Format zur Angabe des Mappings von IP-Adresse zu Name bzw. umgekehrt - oder weitere Information. Resource Records sind die Einträge in den Datenbank-Files des Name Servers.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{../aufg2/dns_2_2_3.png}
+	\caption{Header in DNS Response}
+	\label{fig:dns_2_2_3}
+\end{figure}
+
+\subsubsection{DNS-Response Paket: Was enthält das Feld Answer? Erklären Sie jede zusätzliche
+Information, die Sie in diesem Feld gefunden haben.}
+\begin{description}
+	\item[NAME] Der Domain-Name, zu der dieser RR gehört. 
+	\item[TYPE] Der RR-Typ Code. Spezifiziert die Bedeutung des Feldes RDATA. Zwei Oktets. 
+	\item[CLASS] RR-Klasse. Spezifiziert die Bedeutung des Feldes RDATA. Zwei Oktets. 
+	\item[TTL] Time To Live - eine 32-bittige Zahl, die die Anzahl der Sekunden angibt, für die man diesen Record im Cache behalten darf. Null bedeutet, das dieser RR nur für die aktuelle Transaktion gilt. 
+	\item[RDLENGTH] Eine 16-bittige Zahl, die die Anzahl der Oktets im RDATA Feld angibt. 
+	\item[RDATA] Ein String variabler Länge (Oktets), der die Resource beschreibt. Das Format hängt von den Setzungen in TYPE und CLASS ab. Bei TYPE = A und CLASS = IN wäre das also eine normale 4 Oktet (32-bittige) ARPA Internet Adresse.
+\end{description}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{../aufg2/dns_2_2_4.png}
+	\caption{Answer-Abschnitt einer Response}
+	\label{fig:dns_2_2_4}
+\end{figure}
+
+\subsection{Traceroute apple.com}
+Die geographische Lage der Router kann insbesondere in diesem Beispiel über die reverse DNS Einträge festgelegt werden. So ist beispielsweise *.zrh1.he.net in Zürich. Der Sprung passiert folglich zwischen Hop 13 und 14, also zwischen Amsterdam und Washington.
+
+Grundsätzlich sollte der Sprung an der Latenzzeit ersichtlich sein. In diesem Fall ist die Latenzzeit der Router in Frankfurt und Amsterdam jedoch schon sehr hoch, was ev. auf eine Überlastung am Übergang zwischen he.net und xo.net in Frankfurt (am DE-CIX) zurückzuführen ist.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{../aufg2/tracert_apple.png}
+	\caption{Traceroute zu apple.com}
+	\label{fig:traceroute_apple}
+\end{figure}
+
+\section{Aufgabe 3 - Nmap/Wireshark}
+Wir haben den Aufruf folgendermassen gemacht: \begin{verbatim}nmap -P0 -p80 www.fhnw.ch\end{verbatim} Wir haben die Option -P0 gesetzt, weil wir wissen, dass unter www.fhnw.ch (mindestens) ein Server erreichbar ist. Der Output des Commands war der folgende:
+
+\begin{lstlisting}
+Starting Nmap 6.01 ( http://nmap.org ) at 2012-11-15 08:18 CET
+Nmap scan report for www.fhnw.ch (147.86.3.160)
+Host is up (0.0021s latency).
+rDNS record for 147.86.3.160: wsnmu25.fhnw.ch
+PORT   STATE SERVICE
+80/tcp open  http
+Nmap done: 1 IP address (1 host up) scanned in 0.03 seconds
+\end{lstlisting}
+
+Mit dem Output können wir praktisch den gesamten aufgezeichneten Verkehr (siehe Grafik \ref{fig:traffic_nmap-p80} auf Seite \pageref{fig:traffic_nmap-p80} begründen:
+\begin{itemize}
+	\item Der Name muss zu einer IP (hier 147.86.3.160) aufgelöst werden, was mittels DNS geschieht.
+	\item Die IP wird zurück zu einem Namen aufgelöst (reverse DNS Lookup, "rDNS record..."), ebenfalls via DNS.
+	\item Danach wird ein kompletter TCP-3-way-Handshake durchgeführt und die Verbindung danach sofort wieder beendet (Frame 8 mit TCP Flags RST,ACK).
+	\item Da der TCP-Handshake erfolgreich durchgeführt werden konnte zeigt uns nmap an, dass der Port geöffnet ist.
+\end{itemize}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{../aufg3/traffic_nmap-p80.png}
+	\caption{Datenverkehr, der durch den nmap-Aufruf ausgelöst wurde}
+	\label{fig:traffic_nmap-p80}
+\end{figure}
+
+\section{Aufgabe 4 - Installation Metasploit}
+
+\section{Aufgabe 5 - Footprinting/Scanning}
+
+\end{document}
