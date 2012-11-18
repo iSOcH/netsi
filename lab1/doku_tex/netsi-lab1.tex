@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{scrartcl}
+﻿\documentclass[11pt,a4paper]{scrartcl}
 \usepackage{graphicx}
 \usepackage[ngerman]{babel}
 \usepackage[utf8]{inputenc}
@@ -244,36 +244,36 @@ Gemäss \url{http://www.bienen-ag.ch/index.php?option=com_content&view=article&i
 \end{figure}
 
 \subsubsection{Via Google gefundene Informationen}
-Die Anfrage \textbf{site:fhnw.ch} lieferte u.A. die folgenden Treffer:
+Die Anfrage \textbf{site:fhnw.ch} sowie weitere Anfragen in der Form \textbf{site:fhnw.ch -site:www.fhnw.ch} lieferte u.A. die folgenden Treffer:
 \begin{lstlisting}
-www.fhnw.ch/
+www.fhnw.ch
 www0.fhnw.ch
-web.fhnw.ch/
-webtransfer.fhnw.ch/
+web.fhnw.ch
+webtransfer.fhnw.ch
 weblogin.fhnw.ch
 webmail.fhnw.ch
-sapportal.fhnw.ch/
-pms.fhnw.ch/
-www.students.fhnw.ch/
-webcorp2.fhnw.ch/
+sapportal.fhnw.ch
+pms.fhnw.ch
+www.students.fhnw.ch
+webcorp2.fhnw.ch
 blogs.fhnw.ch
-eranger.fhnw.ch/
-es.fhnw.ch/
+eranger.fhnw.ch
+es.fhnw.ch
 aai-logon.fhnw.ch
 helio.i4ds.technik.fhnw.ch
 tools.fhnw.ch
 www.ph.fhnw.ch
 portfolio-kompetenzmanagement.fhnw.ch
-mediothek.hgk.fhnw.ch/
+mediothek.hgk.fhnw.ch
 status.fhnw.ch
 ict.campus-brugg-windisch.fhnw.ch
 pensentool.fhnw.ch
 genius.wirtschaft.fhnw.ch
 m.fhnw.ch
-*.imvs.technik.fhnw.ch/
-*.cs.technik.fhnw.ch/
+*.imvs.technik.fhnw.ch (diverse Subdomains)
+*.cs.technik.fhnw.ch (diverse Subdomains)
 \end{lstlisting}
-Mit \textbf{link:fhnw.ch} konnten folgende Einträge gefunden werden:
+Mit \textbf{link:fhnw.ch} konnten u.A. folgende Einträge gefunden werden:
 \begin{lstlisting}
 www.unilu.ch/deu/links_4006.html
 lib.consortium.ch/html_wrapper.php?dir=libraries&src=addresses1
@@ -286,6 +286,9 @@ www.esbasel.ch/en/impressum/
 \end{lstlisting}
 
 \subsubsection{Reverse-DNS-Namen von 147.86.0.0/16}
+Für die Reverse-DNS-Namen wurde folgendes Perl Skript verwendet:
+\lstinputlisting[numbers=left]{../aufg5/nslookup.pl}
+
 In der folgenden Tabelle sind die PTR-Einträge im DNS für die externe IP-Range der FHNW gelistet.
 \begin{longtable}{p{2.5cm}|p{7cm}}
 	\textbf{IP Adresse} & \textbf{PTR-Eintrag} \\
