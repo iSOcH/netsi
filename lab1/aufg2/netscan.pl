@@ -28,6 +28,10 @@ do {
 		push(@lines,$act_ip);	
 	}
 } while (++$ip);
+
+print "\n\n\n---------------Scan results-------------------";
+print "\n----------following hosts are up--------------\n";
 foreach(@lines){
-	print $_."\n";
+	my $hostname = qx/nslookup $_ | grep name | awk \'{print \$4}\'/;
+	print "$_ : $hostname\n";
 }
