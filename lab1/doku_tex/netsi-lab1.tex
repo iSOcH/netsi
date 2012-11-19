@@ -594,7 +594,7 @@ demosim.cs.technik.fhnw.ch has address 10.36.139.200
 [iso@iso-t530arch aur]$ tracepath 10.36.139.200
  1:  iso-t530arch		0.104ms pmtu 1500
  1:  10.196.136.1		1.370ms 
- 1:  10.196.136.1		1.184ms 
+ 1:  10.196.136.1		1.184ms
  2:  10.195.0.238		2.343ms asymm  3 
  3:  10.195.0.238		1.872ms 
  4:  no reply
@@ -690,6 +690,8 @@ host          port  proto  name  state  info
 Die verwendete Apache Version hat gemäss \url{http://httpd.apache.org/security/vulnerabilities_22.html} zumindest eine einigermassen wichtige Lücke, nämlich ein möglicher DOS (\url{http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3192}).
 
 Da dieses Gerät gemäss traceroutes auch Datenverkehr routet, könnte ein Angriff, der sehr viel Last erzeugt, den Zugang für andere WLAN-Teilnehmer verlangsamen oder unbrauchbar machen.
+
+Im Docking-Netz werden DNS-Anfragen (auch bzgl. externen DNS-Einträgen) korrekt beantwortet. Dies ermöglich theoretisch den unauthorisierten Internetzugang aus dem FHNW-WLAN, indem eine DNS-Tunnelling-Technik angewandt wird. Wie dies funktioniert wird beispielsweise unter \url{http://www.splitbrain.org/blog/2008-11/02-dns_tunneling_made_simple} beschrieben.
 
 \subsubsection{VPN}
 Bei der Einwahl via VPN erhält (ein Student) eine IP aus dem Bereich 10.175.240.0/22. Aus dem VPN kann keine Verbindung zu einem Client im normalen Ethernet der FHNW hergestellt werden, auch in der umgekehrten Richtung gelingt dies nicht.
