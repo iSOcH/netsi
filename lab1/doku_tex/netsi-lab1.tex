@@ -1,9 +1,11 @@
-﻿\documentclass[11pt,a4paper]{scrartcl}
+\documentclass[a4paper,11pt]{scrartcl}
 \usepackage{graphicx}
 \usepackage[ngerman]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[colorlinks=false,pdfborder={0 0 0}]{hyperref}
 \usepackage{longtable}
+\usepackage{placeins} %%archlinux: this is in texlive-latexextra
+%% provides the \FloatBarrier command
 \usepackage{listings}
 \lstset{breaklines=true, breakatwhitespace=true, basicstyle=\small}
 
@@ -15,6 +17,7 @@
 \begin{document}
 \maketitle
 \tableofcontents
+\FloatBarrier
 \newpage
 \section{Aufgabe 1 - Wireshark/ARP}
 \subsection{Protokollaufbau}
@@ -25,6 +28,7 @@ Die folgende Grafik\footnote{Quelle: http://ipv6.com/images/diagrams/arp1.gif} z
 	\caption{Address Resolution Protocol}
 	\label{fig:arp}
 \end{figure}
+\FloatBarrier
 \subsection{Beantwortung der gestellten Fragen zum Protokoll}
 \textbf{Wieviele Bytes ist das ARP Opcode-Feld vom Anfang des Ethernet Frames entfernt?} \\6 Byte\\
 \textbf{Welcher Wert hat das Opcode-Feld innerhalb des ARP-payload des Ethernet frame, worin eine ARP Anfrage gestellt ist?} \\ARP request\\
@@ -48,6 +52,7 @@ Spalte bedeutet.} \\arp -n\\
 \end{description}
 
 
+\FloatBarrier
 \newpage
 \section{Aufgabe 2 - Utilities ping, hping3, dig, traceroute}
 \subsection{Perl Script für Host-Discovery im Subnet}
@@ -64,6 +69,7 @@ Das Script erzeugt eine Ausgabe ähnlich der Folgenden:
 10.196.134.120
 \end{lstlisting}
 
+\FloatBarrier
 \subsection{DNS Protokoll}
 Viele Informationen in diesem Abschitt stammen von \url{http://doc-tcpip.org/Dns/named.dns.message.html}.
 \subsubsection{DNS-Request Packet: Welches Protokoll wird benutzt? Welche Vorteile bietet
@@ -85,6 +91,7 @@ Auf Zielhost wird auf Port 53 abgehört. Da es eine Anfrage ist, ist der Destina
 	\label{fig:dns_2_2_2}
 \end{figure}
 
+\FloatBarrier
 \subsubsection{DNS-Response Paket: Welche Felder gibt es? Erklären Sie deren Bedeutung.}
 \begin{description}
 	\item[Time] Antwortzeit
@@ -120,6 +127,7 @@ Information, die Sie in diesem Feld gefunden haben.}
 	\label{fig:dns_2_2_4}
 \end{figure}
 
+\FloatBarrier
 \subsection{Traceroute apple.com}
 Die geographische Lage der Router kann insbesondere in diesem Beispiel über die reverse DNS Einträge festgelegt werden. So ist beispielsweise *.zrh1.he.net in Zürich. Der Sprung passiert folglich zwischen Hop 13 und 14, also zwischen Amsterdam und Washington.
 
@@ -131,6 +139,7 @@ Grundsätzlich sollte der Sprung an der Latenzzeit ersichtlich sein. In diesem F
 	\label{fig:traceroute_apple}
 \end{figure}
 
+\FloatBarrier
 \newpage
 \section{Aufgabe 3 - Nmap/Wireshark}
 Wir haben den Aufruf folgendermassen gemacht: \begin{verbatim}nmap -P0 -p80 www.fhnw.ch\end{verbatim} Wir haben die Option -P0 gesetzt, weil wir wissen, dass unter www.fhnw.ch (mindestens) ein Server erreichbar ist. Der Output des Commands war der folgende:
@@ -173,6 +182,7 @@ msf > db_connect metasploit:****@127.0.0.1/metasploit
 Nach diesen Schritten ist metasploit bereit für Scans und mit der Datenbank verbunden.
 
 
+\FloatBarrier
 \newpage
 \section{Aufgabe 5 - Footprinting/Scanning}
 \subsection{Footprinting}
@@ -209,7 +219,7 @@ ns2.fhnw.ch [147.86.3.21]
 \subsubsection{DNS Einträge}
 Die Information in Grafik \ref{fig:dns_records} auf der Seite \pageref{fig:dns_records} stammen von \url{http://network-tools.com/nslook/Default.asp?domain=fhnw.ch&type=255&server=&class=1&port=53&timeout=5000&go.x=24&go.y=6}.
 
-Dies zeigt uns die verwendeten Mailserver sowie die Nameserver inkl. deren IP-Adresse, wobei die Nameserver bereits bei whois aufgelistet sind. Der Befehl "dig fhnw.ch" hat uns leider nicht mehr angezeigt als whois. Es waren also lediglich die Nameserver aufgelistet.
+Dies zeigt uns die verwendeten Mailserver sowie die Nameserver inkl. deren IP-Adresse, wobei die Nameserver bereits bei whois aufgelistet sind. Der Befehl \glqq{}dig fhnw.ch\grqq{} hat uns leider nicht mehr angezeigt als whois. Es waren also lediglich die Nameserver aufgelistet.
 \begin{figure}[p]
 	\centering
 	\includegraphics[width=0.6\textwidth]{../aufg5/dns_records.png}
@@ -527,6 +537,7 @@ In der folgenden Tabelle sind die PTR-Einträge im DNS für die externe IP-Range
 	147.86.8.116 & jobcrawler4.cs.technik.fhnw.ch \\
 \end{longtable}
 
+\FloatBarrier
 \subsection{Scanning}
 \subsubsection{Nmap mit Metasploit im lokalen Subnetz}
 In einem ersten Schritt wurde das lokale Subnetz mittels nmap gescannt.
@@ -719,10 +730,10 @@ Ansonsten zeigte der VPN-Zugang keine nennenswerten Unterschiede zum Zugang via 
 	193.73.125.0/24	&	Externe Netzwerkgeräte (diese Range erscheint in Traceroutes zu Servern ausserhalb des FHNW-Netzes und gehört gemäss whois auch zur FHNW)
 \end{longtable}
 
-Die folgende Darstellung zeigt den logischen Netzaufbau, wie wir ihn primär mittels traceroutes bestimmen konnten.
+Die Darstellung \ref{fig:netzplan} auf Seite \pageref{fig:netzplan} zeigt den logischen Netzaufbau, wie wir ihn primär mittels traceroutes bestimmen konnten.
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1.0\textwidth]{../aufg5/netzplan.png}
+	\includegraphics[width=0.9\textwidth]{../aufg5/netzplan.png}
 	\caption{Netzwerk FHNW}
 	\label{fig:netzplan}
 \end{figure}
