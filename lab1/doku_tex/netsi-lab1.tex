@@ -673,6 +673,26 @@ msf  auxiliary(smb_version) > run
 \end{lstlisting}
 Wir sehen nun einerseits die ausgeführten Windows-Versionen, aber andererseits auch die Active-Directory-Domäne in welcher sich die Geräte befinden. Es fällt auf, dass nur ein Server nicht in der edu-Domäne läuft, und dass sich keiner der Server in der adm-Domäne befindet (welche u.A. für Dozenten genutzt wird). Sehr wahrscheinlich sind diese Server in einer Range, die von Studenten nicht erreicht werden kann. Ein erfolgreicher Angriff auf den Server 10.51.2.24 dürfte allerdings auch Änderungen in der ADM-Domäne ermöglichen (die DNS-Namen lassen darauf schliessen, dass ADM und EDU Sub-Domänen von DS sind).
 
+Gemäss den erreichbaren Services auf den Servern 10.51.2.40 und 10.51.2.41 handelt es sich sehr wahrscheinlich um Windows Active Directory Domänencontroller (benutzt unter Anderem Kerberos und LDAP).
+\begin{lstlisting}
+msf > services 10.51.2.40
+Services
+========
+host        port   proto  name              state  info
+----        ----   -----  ----              -----  ----
+10.51.2.40  53     tcp    domain            open   
+10.51.2.40  88     tcp    kerberos-sec      open   
+10.51.2.40  135    tcp    msrpc             open   
+10.51.2.40  139    tcp    netbios-ssn       open   
+10.51.2.40  389    tcp    ldap              open   
+10.51.2.40  445    tcp    microsoft-ds      open   Windows 2003 R2 Service Pack 2 (language: Unknown) (name:DSEMU11) (domain:EDU)
+10.51.2.40  464    tcp    kpasswd5          open   
+10.51.2.40  636    tcp    ldapssl           open   
+10.51.2.40  3268   tcp    globalcatldap     open   
+10.51.2.40  3269   tcp    globalcatldapssl  open   
+10.51.2.40  49152  tcp                      open   
+\end{lstlisting}
+
 \subsubsection{WLAN}
 Verbindet man sich per WLAN mit dem Netz, startet dann aber keine VPN Verbindung, so landet man in einem Netz wie 10.175.x.0/24. Aus diesem Netz kann vorerst nur die Maschine 10.163.0.221 erreicht werden. Dieses Gerät liefert einem die Anmeldeseite.
 \begin{lstlisting}
