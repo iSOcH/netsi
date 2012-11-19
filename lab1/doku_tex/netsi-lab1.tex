@@ -207,6 +207,9 @@ ns2.fhnw.ch [147.86.3.21]
 \end{lstlisting}
 
 \subsubsection{DNS Einträge}
+Die Information in Grafik \ref{fig:dns_records} auf der Seite \pageref{fig:dns_records} stammen von \url{http://network-tools.com/nslook/Default.asp?domain=fhnw.ch&type=255&server=&class=1&port=53&timeout=5000&go.x=24&go.y=6}.
+
+Dies zeigt uns die verwendeten Mailserver sowie die Nameserver inkl. deren IP-Adresse, wobei die Nameserver bereits bei whois aufgelistet sind. Der Befehl "dig fhnw.ch" hat uns leider nicht mehr angezeigt als whois. Es waren also lediglich die Nameserver aufgelistet.
 \begin{figure}[p]
 	\centering
 	\includegraphics[width=0.6\textwidth]{../aufg5/dns_records.png}
@@ -216,6 +219,8 @@ ns2.fhnw.ch [147.86.3.21]
 
 \subsubsection{Infos zur Website}
 Die Informationen in Grafik \ref{fig:website_infos} auf Seite \pageref{fig:website_infos} stammen von \url{http://www.websitelibrary.ch/fhnw.ch}.
+
+Die Grafik zeigt, dass die Website weltweit unter den 200'000 am meisten besuchten Webseiten ist, was ein guter Wert ist. Die Website ist bei Google 757 mal verlinkt und 204'000 Seiten sind im Google-Index. Dies zeigt wie gross die Website fhnw.ch ist.
 \begin{figure}[p]
 	\centering
 	\includegraphics[width=0.5\textwidth]{../aufg5/website_infos.png}
@@ -224,7 +229,9 @@ Die Informationen in Grafik \ref{fig:website_infos} auf Seite \pageref{fig:websi
 \end{figure}
 
 \subsubsection{Informationen zu Mail und Netzwerk}
-Eberle: Quellenangabe hier bitte - Grafik \ref{fig:iprange_infos} auf Seite \pageref{fig:iprange_infos}
+Die Informationen in der Grafik \ref{fig:iprange_infos} auf Seite \pageref{fig:iprange_infos} stammen von \url{http://www.tcpiputils.com/browse/ip-address/147.86.3.160}.
+
+Die Grafik zeigt, dass EDU auf einer Blacklist vorhanden ist. Der Grund dafür kann nur vermutet werden, aber bei so vielen Schülern welche oftmals Massenmails versenden, ist dies nicht überraschend.
 \begin{figure}[p]
 	\centering
 	\includegraphics[width=0.6\textwidth]{../aufg5/iprange_infos.png}
@@ -289,7 +296,7 @@ www.esbasel.ch/en/impressum/
 Für die Reverse-DNS-Namen wurde folgendes Perl Skript verwendet:
 \lstinputlisting[numbers=left]{../aufg5/nslookup.pl}
 
-In der folgenden Tabelle sind die PTR-Einträge im DNS für die externe IP-Range der FHNW gelistet.
+In der folgenden Tabelle sind die PTR-Einträge im DNS für die externe IP-Range der FHNW gelistet. Dies gibt uns nun die Grundlage um die Scanning Phase zu starten.
 \begin{longtable}{p{2.5cm}|p{7cm}}
 	\textbf{IP Adresse} & \textbf{PTR-Eintrag} \\
 	\endfirsthead
