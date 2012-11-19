@@ -1,11 +1,24 @@
-#! usr/bin/perl
+#!/usr/bin/perl
+use strict;
 use IO::Socket;
-$b_net = "147.86";
-for ($i=3; $i<4; $i++) {
-for ($j=88; $j<89; $j++) {
-$ipaddr = "$b_net.$i.$j";
-$name = gethostbyaddr(${ipaddr}, AF_INET);
-if ($name){
-open (MYFILE, '>>data.txt');
-print MYFILE "${ipaddr} & ${name} \\\\ \n";
-}}}
+my $b_net = "147.86";
+my $i = 0;
+my $j = 0;
+my $ipaddr = "";
+my $name = "";
+my $myfile;
+
+open(MYFILE, ">nslookup-output.txt");
+for ($i=0; $i<256; $i++) {
+	for ($j=0; $j<256; $j++) {
+		$ipaddr = "$b_net.$i.$j";
+		#print "trying to look up "."$ipaddr"."\n";
+		my $iaddr = inet_aton($ipaddr);
+		$name  = gethostbyaddr($iaddr, AF_INET);
+		if ($name){
+			print $ipaddr.":\t".$name."\n";
+			print MYFILE $ipaddr." & ".$name." \\\\ \n";
+		}
+	}
+}
+close(MYFILE);
