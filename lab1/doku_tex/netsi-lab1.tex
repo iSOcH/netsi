@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt]{scrartcl}
+﻿\documentclass[a4paper,11pt]{scrartcl}
 \usepackage{graphicx}
 \usepackage[ngerman]{babel}
 \usepackage[utf8]{inputenc}
@@ -571,7 +571,26 @@ In der folgenden Tabelle sind die PTR-Einträge im DNS für die externe IP-Range
 	147.86.20.26 & soleil-old.cs.technik.fhnw.ch \\ 
 	147.86.20.28 & wi18as32800.adm.ds.fhnw.ch \\ 
 	147.86.20.33 & nd40u101-pub-vl55.net.fhnw.ch \\ 
+	147.86.23.17 & nd70u201-pub-vl51.net.fhnw.ch \\ 
+	147.86.23.33 & nd70u201-pub-vl52.net.fhnw.ch \\ 
+	147.86.23.36 & sage.medienkunst.ch \\ 
+	147.86.24.17 & nd80o101-pub-vl51.net.fhnw.ch \\ 
+	147.86.24.18 & moodle2.test.fhnw.ch \\ 
+	147.86.24.20 & ololns12001.fhnw.ch \\ 
+	147.86.25.17 & nd91u101-pub-vl51.net.fhnw.ch \\ 
+	147.86.25.18 & agora.imedias.ch \\ 
+	147.86.25.19 & backup.imedias.ch \\ 
+	147.86.26.17 & nda0u101-pub-vl51.net.fhnw.ch \\ 
+	147.86.26.21 & spine.ima.lifesciences.fhnw.ch \\ 
+	147.86.26.23 & teamne.ivgi.habg.fhnw.ch \\ 
+	147.86.26.24 & uavision.ivgi.habg.fhnw.ch \\ 
+	147.86.26.28 & echolink-mu.ict.services.fhnw.ch \\ 
+	147.86.26.29 & apps.ima.lifesciences.fhnw.ch \\ 
+	147.86.26.33 & nda0u101-pub-vl53.net.fhnw.ch \\ 
 \end{longtable}
+
+
+In den höheren Bereichen gibt es sehr viele verschiedene NAT-Gateways. Wir erläutern diese im 
 
 \FloatBarrier
 \subsection{Scanning}
@@ -785,6 +804,12 @@ Ansonsten zeigte der VPN-Zugang keine nennenswerten Unterschiede zum Zugang via 
 	10.51.2.40		&	DNS, Domänencontroller \\
 	10.51.2.41		&	DNS, DHCP, Domänencontroller \\
 	147.86.0.0/16	&	Externe Server (jaja\ldots damals gabs noch genug IPs\ldots)\\
+	147.86.160.0/20	&	DOK-NAT-Gateways (bei Zugang über WLAN mit Authentifizierung werden Verbindungen zu externen IP-Adressen über diese Range abgewickelt)
+	147.86.176.0/20	&	VIP-NAT-Gateways (Vermutung: bei VOIP-Telefonen werden Verbindungen zu externen IP-Adressen über diese Range abgewickelt)
+	147.86.192.0/20	&	STU-NAT-Gateways (bei Zugang über Kabel in den Schulzuimmern (Studenten) werden Verbindungen zu externen IP-Adressen über diese Range abgewickelt)
+	147.86.208.0/20	&	STA-NAT-Gateways (Vermutung: bei statischem Zugang werden Verbindungen zu externen IP-Adressen über diese Range abgewickelt)
+	147.86.224.0/20	&	SRV-NAT-Gateways (bei Servern werden Verbindungen zu externen IP-Adressen über diese Range abgewickelt)
+	147.86.240.0/20	&	Diverse andere NAT-Gateways (In diesem Range gibt es noch diverse andere NAT-Gateways wie z.B: VPN, Printer, ...)
 	193.73.125.0/24	&	Externe Netzwerkgeräte (diese Range erscheint in Traceroutes zu Servern ausserhalb des FHNW-Netzes und gehört gemäss whois auch zur FHNW)
 \end{longtable}
 
