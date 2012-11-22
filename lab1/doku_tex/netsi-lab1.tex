@@ -56,18 +56,18 @@ Spalte bedeutet.} \\arp -n\\
 \newpage
 \section{Aufgabe 2 - Utilities ping, hping3, dig, traceroute}
 \subsection{Perl Script für Host-Discovery im Subnet}
-Dieses Script wurde in Zusammenarbeit mit der Gruppe Sacher / Galbier entwickelt.
+Dieses Script wurde in Zusammenarbeit mit der Gruppe Sacher/Galbier entwickelt.
 \lstinputlisting[numbers=left]{../aufg2/netscan.pl}
 
 Das Script erzeugt eine Ausgabe ähnlich der Folgenden:
 \begin{lstlisting}
-10.196.134.1
-10.196.134.16
-10.196.134.17
-10.196.134.19
-10.196.134.21
-10.196.134.118
-10.196.134.120
+---------------Scan results-------------------
+----------following hosts are up--------------
+192.168.12.250 : om1nae.dyndns.org.
+
+192.168.12.251 : 
+192.168.12.253 : 
+192.168.12.254 : iso-m0n0.local.
 \end{lstlisting}
 
 \FloatBarrier
@@ -170,6 +170,8 @@ Mit dem Output können wir praktisch den gesamten aufgezeichneten Verkehr (siehe
 	\label{fig:traffic_nmap-p80}
 \end{figure}
 
+Wenn wir auf die Option -P0 verzichten, führt nmap unterschiedliche zusätzliche Tests durch, um festzustellen, ob der oder die Zielhost(s) online ist resp. sind. Nmap nutzt dabei im lokalen LAN eine ARP-Anfrage, ansonsten versucht es ICMP-Ping-Anfragen und Verbindungen auf die Ports tcp/80 und tcp/443 herzustellen. Erst nachdem mindestens einer dieser Tests zeigt, dass der Zielhost erreichbar ist, werden die vom Benutzer gewünschten Scans durchgeführt.
+
 \newpage
 \section{Aufgabe 4 - Installation Metasploit}
 Metaplsploit wurde unter Arch Linux mithilfe des Pakets von \url{https://aur.archlinux.org/packages.php?ID=2880} installiert. Das Package beinhaltet Postgresql nicht, daher musste dieser Datenbankdienst separat über die Paketverwaltung installiert und danach konfiguriert werden. Die Administration von Postgresql wurde mit dem Paket pgadmin abgewickelt (Erstellen eines Benutzers und einer Datenbank).
@@ -180,7 +182,7 @@ $ gem install pg
 $ msfconsole
 msf > db_connect metasploit:****@127.0.0.1/metasploit
 \end{lstlisting}
-Nach diesen Schritten ist metasploit bereit für Scans und mit der Datenbank verbunden.
+Beim ersten Aufruf von db\_connect werden dabei direkt die benötigten Tabellen angelegt. Nach diesen Schritten ist metasploit bereit für Scans und mit der Datenbank verbunden.
 
 
 \FloatBarrier
@@ -242,7 +244,7 @@ Die Grafik zeigt, dass die Website weltweit unter den 200'000 am meisten besucht
 \subsubsection{Informationen zu Mail und Netzwerk}
 Die Informationen in der Grafik \ref{fig:iprange_infos} auf Seite \pageref{fig:iprange_infos} stammen von \url{http://www.tcpiputils.com/browse/ip-address/147.86.3.160}.
 
-Die Grafik zeigt, dass EDU auf einer Blacklist vorhanden ist. Der Grund dafür kann nur vermutet werden, aber bei so vielen Schülern welche oftmals Massenmails versenden, ist dies nicht überraschend.
+Die Grafik zeigt, das Netzwerk in einer \glqq{}EDU-Blacklist\grqq{} gelistet ist. Da es sich ja tatsächlich um ein Netzwerk für Ausbildungszwecke handelt, ist dies nicht weiter erstaunlich.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.6\textwidth]{../aufg5/iprange_infos.png}
@@ -307,7 +309,7 @@ www.esbasel.ch/en/impressum/
 Für die Reverse-DNS-Namen wurde folgendes Perl Skript verwendet:
 \lstinputlisting[numbers=left]{../aufg5/nslookup.pl}
 
-In der folgenden Tabelle sind die PTR-Einträge im DNS für die externe IP-Range der FHNW gelistet (wir haben in diesem Dokument die Ausgabe abgeschnitten - das Dokument wäre sonst einige hundert Seiten lang geworden). Dies gibt uns nun die Grundlage um die Scanning Phase zu starten.
+In der folgenden Tabelle sind die PTR-Einträge im DNS für die externe IP-Range der FHNW gelistet (wir haben in diesem Dokument die Ausgabe abgeschnitten - es wäre sonst einige hundert Seiten lang geworden). Dies gibt uns nun die Grundlage um die Scanning Phase zu starten.
 \begin{longtable}{p{2.5cm}|p{7cm}}
 	\textbf{IP Adresse} & \textbf{PTR-Eintrag} \\
 	\endfirsthead
@@ -589,8 +591,15 @@ In der folgenden Tabelle sind die PTR-Einträge im DNS für die externe IP-Range
 	147.86.26.33 & nda0u101-pub-vl53.net.fhnw.ch \\ 
 \end{longtable}
 
+Zu den Kürzeln in diesen Domainnamen:
+\begin{description}
+	\item[nd*-*-vl??.net.fhnw.ch] Router
+	\item[ws*.fhnw.ch] Webserver
+\end{description}
 
-In den höheren Bereichen gibt es sehr viele verschiedene NAT-Gateways. Wir erläutern diese im 
+Ein vorhandener PTR-Eintrag im DNS bedeutet nicht allerdings nicht zwangsläufig dass der unter der jeweiligen IP erreichbare Server wirklich eine dem Namen entsprechende Funktion hat. Es sind auch lange nicht unter allen IPs mit PTR-Einträgen überhaupt (noch) Server erreichbar.
+
+In den höheren Bereichen gibt es sehr viele verschiedene NAT-Gateways. Wir erläutern diese im Abschnitt \ref{summary-ipranges} auf Seite \pageref{summary-ipranges}.
 
 \FloatBarrier
 \subsection{Scanning}
@@ -656,9 +665,9 @@ demosim.cs.technik.fhnw.ch has address 10.36.139.200
  5:  10.36.18.1		2.689ms 
  6:  no reply [... und so weiter]
 \end{lstlisting}
-Ein Traceroute eines erreichbaren Servers aus dieser Range zeigt, dass 10.36.18.1 der letzte Hop vor dem Zielnetz ist. Daraus lässt sich schliessen, dass das Netz für diese internen Server mindestens das Ausmass 10.36.0.0/16 (also ~65500 Adressen) hat.
+Ein Traceroute eines erreichbaren Servers aus dieser Range zeigt, dass 10.36.18.1 der letzte Hop vor dem Zielnetz ist. Im Folgenden haben wir die gesamte 10.36.0.0/16 IP-Range gescannt.
 
-Ein ausgiebiger Scan dieses Netzes fördert eine Nachlässigkeit der Netzwerkadministratoren zu Tage:
+Dieser Scan fördert eine Nachlässigkeit der Netzwerkadministratoren zu Tage:
 \begin{lstlisting}
 msf > db_nmap -T5 -A 10.36.0.0/16
  [*] Nmap: | ssh-hostkey: Possible duplicate hosts
@@ -696,7 +705,7 @@ msf > db_nmap -T5 -A 10.36.0.0/16
 [*] Nmap: |_  10.36.19.70
  [*] Nmap: Nmap done: 65536 IP addresses (40 hosts up) scanned in 1796.25 seconds
 \end{lstlisting}
-Sehr wahrscheinlich werden neue Maschinen in diesem Netz von einer Vorlage-VM geklont. Nach dem Klonvorgang wird aber scheinbar kein neuer SSH-Hostkey erstellt. Daraus folgt, dass die Benutzer dieser Maschinen nichts feststellen würden, wenn sie sich mit einer anderen Maschine als der eigenen verbinden. Dadurch könnten Man-in-the-Middle-Angriffe durchgeführt werden.
+Sehr wahrscheinlich werden neue Maschinen in diesem Netz von einer Vorlage-VM geklont. Nach dem Klonvorgang wird aber scheinbar kein neuer SSH-Hostkey erstellt. Daraus folgt, dass die Benutzer dieser Maschinen nicht feststellen würden, wenn sie sich mit einer anderen Maschine als der Eigenen verbinden. Dadurch könnten Man-in-the-Middle-Angriffe durchgeführt werden.
 
 Ebenfalls sollten die Keys für RSA- und DSA-Schlüssel mindestens 2048 bit lang sein.
 
@@ -705,7 +714,7 @@ Ebenfalls sollten die Keys für RSA- und DSA-Schlüssel mindestens 2048 bit lang
 \subsubsection{Scan der internen Server, 10.51.0.0/22}
 Bisher haben wir gesehen, dass die Verzeichnis- und Datei-Server in 10.51.2.x und der Router in 10.51.0.x liegt. Der Druckserver hat eine noch etwas höhere IP:
 \begin{verbatim}PING psera111.edu.ds.fhnw.ch (10.51.3.99)\end{verbatim}
-Um möglichst viele Server zu erwischen, scannen wir ein etwas grösseres Netz:
+Um möglichst viele Server zu erwischen, scannen wir auch hier ein etwas grösseres Netz:
 \begin{verbatim}msf > db_nmap -T5 -A 10.51.0.0/21\end{verbatim}
 
 Der Nmap-Scan fördert mit den gezeigten Befehlen lediglich die OS-Version der Linux Maschinen zu Tage. Bei den Windows Geräten fehlt bislang ein Eintrag in der OS-Tabelle. Dies lässt sich mit einem speziellen Modul ändern:
@@ -714,7 +723,7 @@ msf > use auxiliary/scanner/smb/smb_version
 msf  auxiliary(smb_version) > hosts -R 10.51.0.0/21
 msf  auxiliary(smb_version) > set THREADS 14
 \end{lstlisting}
-Zunächst wird hier das Scanner-Modul geladen. Im Nachfolgenden Schritt wird in der hosts-Datenbank nach Einträgen gesucht, die sich in der Range 10.51.0.0/21 befinden. Die Option -R führt dazu, dass die gefundenen Hosts direkt in die Variable RHOSTS geschrieben werden. Diese Variable wird von den meisten Scanner-Modulen benutzt.
+Zunächst wird hier das Scanner-Modul geladen. Im nachfolgenden Schritt wird in der hosts-Datenbank nach Einträgen gesucht, die sich in der Range 10.51.0.0/21 befinden. Die Option -R führt dazu, dass die gefundenen Hosts direkt in die Variable RHOSTS geschrieben werden. Diese Variable wird von den meisten Scanner-Modulen benutzt.
 \begin{lstlisting}
 msf  auxiliary(smb_version) > run 
 [*] 10.51.2.40:445 is running Windows 2003 R2 Service Pack 2 (language: Unknown) (name:DSEMU11) (domain:EDU)
@@ -766,7 +775,7 @@ Die verwendete Apache Version hat gemäss \url{http://httpd.apache.org/security/
 
 Da dieses Gerät gemäss traceroutes auch Datenverkehr routet, könnte ein Angriff, der sehr viel Last erzeugt, den Zugang für andere WLAN-Teilnehmer verlangsamen oder unbrauchbar machen.
 
-Im Docking-Netz werden DNS-Anfragen (auch bzgl. externen DNS-Einträgen) korrekt beantwortet. Dies ermöglich theoretisch den unauthorisierten Internetzugang aus dem FHNW-WLAN, indem eine DNS-Tunnelling-Technik angewandt wird. Wie dies funktioniert wird beispielsweise unter \url{http://www.splitbrain.org/blog/2008-11/02-dns_tunneling_made_simple} beschrieben.
+Im Docking-Netz werden DNS-Anfragen (auch bzgl. externen DNS-Einträgen) korrekt beantwortet. Dies ermöglich theoretisch Internetzugang aus dem FHNW-WLAN, ohne dass man sich an der Box anmelden müsste. Eine DNS-Tunnelling-Technik könnte diesen Ausbruch ermöglichen. Wie dies funktioniert wird beispielsweise unter \url{http://www.splitbrain.org/blog/2008-11/02-dns_tunneling_made_simple} beschrieben.
 
 \subsubsection{VPN}
 Bei der Einwahl via VPN erhält (ein Student) eine IP aus dem Bereich 10.175.240.0/22. Aus dem VPN kann keine Verbindung zu einem Client im normalen Ethernet der FHNW hergestellt werden, auch in der umgekehrten Richtung gelingt dies nicht.
@@ -783,6 +792,7 @@ traceroute to 10.51.2.40 (10.51.2.40), 30 hops max, 60 byte packets
 Ansonsten zeigte der VPN-Zugang keine nennenswerten Unterschiede zum Zugang via Ethernet.
 
 \subsubsection{Zusammenfassung und Darstellung der gefundenen Netzwerkkomponenten und Ranges}
+\label{summary-ipranges}
 \begin{longtable}{p{3cm}|p{9cm}}
 	\textbf{IP (/Range)} & \textbf{Beschreibung} \\
 	\hline
@@ -806,8 +816,8 @@ Ansonsten zeigte der VPN-Zugang keine nennenswerten Unterschiede zum Zugang via 
 	147.86.0.0/16	&	Externe Server (jaja\ldots damals gabs noch genug IPs\ldots)\\
 	147.86.160.0/20	&	DOK-NAT-Gateways (bei Zugang über WLAN mit Authentifizierung werden Verbindungen zu externen IP-Adressen über diese Range abgewickelt)\\
 	147.86.176.0/20	&	VIP-NAT-Gateways (Vermutung: bei VOIP-Telefonen werden Verbindungen zu externen IP-Adressen über diese Range abgewickelt)\\
-	147.86.192.0/20	&	STU-NAT-Gateways (bei Zugang über Kabel in den Schulzuimmern (Studenten) werden Verbindungen zu externen IP-Adressen über diese Range abgewickelt)\\
-	147.86.208.0/20	&	STA-NAT-Gateways (Vermutung: bei statischem Zugang werden Verbindungen zu externen IP-Adressen über diese Range abgewickelt)\\
+	147.86.192.0/20	&	STU-NAT-Gateways (bei Zugang über Kabel in den Schulzimmern (Studenten) werden Verbindungen zu externen IP-Adressen über diese Range abgewickelt)\\
+	147.86.208.0/20	&	STA-NAT-Gateways (Vermutung: könnte für \glqq{}statisches NAT\grqq{} stehen, also IPs die internen Server zugeordnet werden)\\
 	147.86.224.0/20	&	SRV-NAT-Gateways (bei Servern werden Verbindungen zu externen IP-Adressen über diese Range abgewickelt)\\
 	147.86.240.0/20	&	Diverse andere NAT-Gateways (In diesem Range gibt es noch diverse andere NAT-Gateways wie z.B: VPN, Printer, ...)\\
 	193.73.125.0/24	&	Externe Netzwerkgeräte (diese Range erscheint in Traceroutes zu Servern ausserhalb des FHNW-Netzes und gehört gemäss whois auch zur FHNW)
