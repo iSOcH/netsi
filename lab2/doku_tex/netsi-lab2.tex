@@ -29,18 +29,18 @@ iso@iso-i7:~/docs/schule/fh/netsi/git/lab2/c_code$ ./1a
 Segmentation fault
 \end{lstlisting}
 
-Um diesem Problem auf die Schliche zu kommen wurde das Programm zusätzlich mit dem \emph{-S}-Flag übersetzt, so dass der Maschinencode bequem aus einem anderen File gelesen werden kann (es handelt sich um ein 64-bit System):
+Um diesem Problem auf die Schliche zu kommen, wurde das Programm zusätzlich mit dem \emph{-S}-Flag übersetzt, so dass der Maschinencode bequem aus einem anderen File gelesen werden kann (es handelt sich um ein 64-bit System):
 \lstinputlisting{../c_code/1a.asm}
 
 In diesem Listing ist kaum etwas ersichtlich, was auf die Ursache des Problems schliessen liesse. Wir sehen wie in Zeile 16 die Adresse des Strings \emph{\%s\%s\%s\%s...} in das Register \%edi geschrieben wird.
 
-Um das Verhalten besser zu verstehen wurde ein abgeändertes Programm erstellt, bei dem weitere Parameter übergeben werden. In diesem Programm werden korrekt zwölf weitere Strings übergeben, die printf in den ersten String einfügt.
+Um das Verhalten besser zu verstehen, wurde ein abgeändertes Programm erstellt, bei dem weitere Parameter übergeben werden. In diesem Programm werden korrekt zwölf weitere Strings übergeben, die printf in den ersten String einfügt.
 \lstinputlisting{../c_code/1a_2.c}
 
 Auch von diesem Programm wurde wiederum die Assemblerversion generiert. Hier ist ersichtlich, dass die ersten sechs Parameter des printf-Aufrufs via Register übergeben werden und die weiteren Parameter via Stack (auf x64 Prozessoren wird das Register \%rsp als Stackpointer benutzt).
 \lstinputlisting{../c_code/1a_2.asm}
 
-Wir nehmen im Folgenden an, dass die printf-Methode auch im ersten Programm die Parameter, die es aufgrund des übergebenen Strings ja brauchen würde, in den Registern \%edi, \%esi, \%edx, \%ecx, \%r8d, \%r9d und dem Stackbereich von \%rsp bis und mit 55(\%rsp) erwartet. Da dieses Programm jeweils nur 32 bit lange Werte schreibt, werden hier die 32-bit Registernamen benutzt. Beim Analysieren des Programmverlaufs ist allerdings zu beachten, dass die ganzen 64 bit des Registers ausgeben werden. Für die Register \%edi, \%esi, \%edx und \%ecx sind \%rdi, \%rsi, \%rdx und \%rcx zu verwenden, bei \%r8d und \%r9d jeweils nur \%r8 und \%r9.
+Wir nehmen im Folgenden an, dass die printf-Methode auch im ersten Programm die Parameter, die es aufgrund des übergebenen Strings ja brauchen würde, in den Registern \%edi, \%esi, \%edx, \%ecx, \%r8d, \%r9d und dem Stackbereich von \%rsp bis und mit 55(\%rsp) erwartet. Da dieses Programm jeweils nur 32 Bit lange Werte schreibt, werden hier die 32-Bit Registernamen benutzt. Beim Analysieren des Programmverlaufs ist allerdings zu beachten, dass die ganzen 64 Bit des Registers ausgegeben werden. Für die Register \%edi, \%esi, \%edx und \%ecx sind \%rdi, \%rsi, \%rdx und \%rcx zu verwenden, bei \%r8d und \%r9d jeweils nur \%r8 und \%r9.
 
 Da es sich bei den Parametern um Strings handeln müsste, wird die Übergabe eines char-Pointers erwartet, also einer auf diesem Testsystem 8 Byte langen Speicheradresse.
 
@@ -97,7 +97,7 @@ Der einzige Parameter der Funktion wird in \%edi übergeben. An der Adresse 0x40
 0x4005fc:	 "%s%s%s%s%s%s%s%s%s%s%s%s"
 \end{lstlisting}
 
-Im folgenden Listing werden die Inhalte der anderen Register und der Speicherstellen, die im zweiten Programm zur Parameterübergabe benutzt wurden, ausgegeben. Da die entsprechenden Stellen im Memory und die Werte der Register nicht gesetzt wurden, zeigen sie an diverse, zum Teil nicht über den Paging-Mechanismus gemappte Adressen. Dies zeigt sich beispielsweise bei der Ausgabe des \glqq{}Strings\grqq{} auf welchen die Adresse auf dem untersten Stackelement zeigen sollte - die Fehlermeldung \emph{Address 0x0 out of bounds} wird dort ausgegeben.
+Im folgenden Listing werden die Inhalte der anderen Register und der Speicherstellen, die im zweiten Programm zur Parameterübergabe benutzt wurden, ausgegeben. Da die entsprechenden Stellen im Memory und die Werte der Register nicht gesetzt wurden, zeigen sie an diverse, zum Teil nicht über den Paging-Mechanismus gemappte Adressen. Dies zeigt sich beispielsweise bei der Ausgabe des \glqq{}Strings\grqq{}, auf welchen die Adresse auf dem untersten Stackelement zeigen sollte - die Fehlermeldung \emph{Address 0x0 out of bounds} wird dort ausgegeben.
 \begin{lstlisting}
 (gdb) info registers rcx rdx rsi rdi rsp r8 r9
 rcx            0x400510	4195600
@@ -115,7 +115,7 @@ r9             0x7ffff7deaf40	140737351954240
 (gdb) x/s 0x400510
 0x400510 <__libc_csu_init>:	 "H\211l$\330L\211d$\340H\215-\003\t "
 (gdb) x/s 0x4005a0
-0x4005a0 <__libc_csu_fini>:	 "\363?\220\220\220\220\220\220\220\220\220\220\220\220\220UH\211\345SH\203\354\bH\213\005h\b "
+0x4005a0 <__libc_csu_fini>:	 "\363?\220\220\220\220\220\220\220\220\220\220\220\220\220UH....."
 (gdb) x/s 0x7ffff7deaf40
 0x7ffff7deaf40:	 "UH\211\345AWAVAUE1\355ATE1\344SH\203\354\070H\307E\260"
 (gdb) x/a 0x7fffffffe4d0
@@ -169,7 +169,7 @@ Auch das Werkzeug \emph{ltrace}, welches die von einem Programm ausgeführten Li
 iso@iso-i7:~/docs/schule/fh/netsi/git/lab2/c_code$ ltrace ./1a
 iso@iso-i7:~/docs/schule/fh/netsi/git/lab2/c_code$ ltrace ./1a
 __libc_start_main(0x4004f4, 1, 0x7fff4d305eb8, 0x400510, 0x4005a0 <unfinished ...>
-printf("%s%s%s%s%s%s%s%s%s%s%s%s", "", "\005i0M\377\177", "H\211l$\330L\211d$\340H\215-\003\t ", "\363\303\220\220\220\220\220\220\220\220\220\220\220\220\220\220UH\211\345SH\203\354\bH\213\005h\b ", "UH\211\345AWAVAUE1\355ATE1\344SH\203\3548H\307E\260", NULL, "\211\307\350\274\245\001", NULL, "", "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"..., "UH\211\345\277\374\005@", NULL <unfinished ...>
+printf("%s%s%s%s%s%s%s%s%s%s%s%s", "", "\005i0M\377\177", "H\211l$\330L\211d$\340H\215-\003\t ", "\363\303\220\220\220\220\220\220\220\220\220\220\220....", "UH\211\345AWAVAUE1\355ATE1\344SH\203\3548H\307E\260", NULL, "\211\307\350\274\245\001", NULL, "", "\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377\377"..., "UH\211\345\277\374\005@", NULL <unfinished ...>
 --- SIGSEGV (Segmentation fault) ---
 +++ killed by SIGSEGV +++
 \end{lstlisting}
@@ -185,7 +185,7 @@ iso@iso-i7:~/docs/schule/fh/netsi/git/lab2/c_code$ ./1b
 08f6b5f8.08f6b608.00400510.004005a0.b02b0f40.
 \end{lstlisting}
 
-Da wir auf einem 64bit-System arbeiten haben wir das Programm folgendermassen abgeändert:
+Da wir auf einem 64bit-System arbeiten, haben wir das Programm folgendermassen abgeändert (\glqq{}lx\grqq{} weist printf an, einen \emph{long integer} hexadezimal darzustellen):
 \lstinputlisting{../c_code/1b.c}
 
 Nach dieser Änderung erhalten wir den folgenden Output:
@@ -251,7 +251,7 @@ Wird ein derartig infiziertes Binary gestartet, werden die folgenden Schritte au
 	\item In den Argumenten, mit denen das infizierte Programm aufgerufen wurde, werden beschreib- und ausführbare Dateien gesucht.
 	\item Falls Dateien mit den entsprechenden Rechten gefunden werden, werden diese infiziert. Dazu kopiert der Virus den Virus-Code-Teil in die Datei und hängt danach den ursprünglichen Inhalt an.
 	\item Das im ersten Schritt erstellte tmp-File (welches nur noch den ursprünglichen Inhalt hat) wird als Kindprozess ausgeführt.
-	\item Sobald dieses Kindprozess beendet wurde, wird der Returncode gespeichert.
+	\item Sobald dieser Kindprozess beendet wurde, wird der Returncode gespeichert.
 	\item Das tmp-File wird gelöscht.
 	\item Der Returncode des originalen Programms wird zurückgegeben.
 \end{itemize}
